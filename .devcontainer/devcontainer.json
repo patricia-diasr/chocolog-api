@@ -1,0 +1,17 @@
+{
+  "name": "Chocolog API",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "Pivotal.vscode-spring-boot",
+        "vmware.vscode-spring-boot-dashboard"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 3306],
+  "postCreateCommand": "echo 'Codespace pronto!'"
+}
