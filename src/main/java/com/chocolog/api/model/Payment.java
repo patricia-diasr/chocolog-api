@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "payments")
+@SQLDelete(sql = "UPDATE payments SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class Payment {
 
     @Id
@@ -31,4 +35,7 @@ public class Payment {
     private BigDecimal paidAmount;
     private LocalDateTime paymentDate;
     private String paymentMethod;
+
+    @Builder.Default
+    private boolean active = true;
 }

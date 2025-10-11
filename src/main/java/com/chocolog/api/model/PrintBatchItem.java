@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -12,6 +14,8 @@ import jakarta.persistence.*;
 @ToString
 @Entity
 @Table(name = "print_batch_items")
+@SQLDelete(sql = "UPDATE print_batch_items SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class PrintBatchItem {
 
     @Id
@@ -25,4 +29,7 @@ public class PrintBatchItem {
     @ManyToOne
     @JoinColumn(name = "order_item_id")
     private OrderItem orderItem;
+
+    @Builder.Default
+    private boolean active = true;
 }

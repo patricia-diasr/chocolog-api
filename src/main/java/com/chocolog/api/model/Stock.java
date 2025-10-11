@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -12,6 +14,8 @@ import jakarta.persistence.*;
 @ToString
 @Entity
 @Table(name = "stock")
+@SQLDelete(sql = "UPDATE stock SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class Stock {
 
     @Id
@@ -28,4 +32,7 @@ public class Stock {
 
     private Integer totalQuantity;
     private Integer remainingQuantity;
+
+    @Builder.Default
+    private boolean active = true;
 }

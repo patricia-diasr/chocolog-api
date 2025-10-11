@@ -9,11 +9,11 @@ import lombok.Setter;
 public class CustomerPatchRequestDTO {
 
     private String name;
-
+    
     @ValidPhone 
     private String phone;
-
+    
     private Boolean isReseller;
-
     private String notes;
+
 }

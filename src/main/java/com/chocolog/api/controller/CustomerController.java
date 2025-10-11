@@ -1,5 +1,6 @@
 package com.chocolog.api.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -47,5 +48,11 @@ public class CustomerController {
     @PatchMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> partialUpdateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerPatchRequestDTO customerDTO) {
         return ResponseEntity.ok(customerService.update(id, customerDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) 
+    public void deleteCustomer(@PathVariable Long id) {
+        customerService.deleteById(id);
     }
 }

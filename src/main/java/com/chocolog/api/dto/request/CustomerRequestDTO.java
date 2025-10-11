@@ -15,8 +15,8 @@ public class CustomerRequestDTO {
     @NotBlank(message = "Phone cannot be blank")
     @ValidPhone
     private String phone;
-
+    
     private Boolean isReseller = false;
-
     private String notes;
+
 }

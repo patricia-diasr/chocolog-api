@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "stock_records")
+@SQLDelete(sql = "UPDATE stock_records SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class StockRecord {
 
     @Id
@@ -30,4 +34,7 @@ public class StockRecord {
     private LocalDateTime productionDate;
     private LocalDateTime expirationDate;
     private String status;
+
+    @Builder.Default
+    private boolean active = true;
 }

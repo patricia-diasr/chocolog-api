@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -13,6 +15,8 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "sizes")
+@SQLDelete(sql = "UPDATE sizes SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class Size {
 
     @Id
@@ -20,6 +24,9 @@ public class Size {
     private Long id;
 
     private String name;
+
+    @Builder.Default
+    private boolean active = true;
 
     @OneToMany(mappedBy = "size")
     private List<OrderItem> orderItems;

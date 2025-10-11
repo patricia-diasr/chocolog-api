@@ -1,5 +1,7 @@
 package com.chocolog.api.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -14,6 +16,8 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "charges")
+@SQLDelete(sql = "UPDATE charges SET active = false WHERE id = ?")
+@Where(clause = "active = true")
 public class Charge {
 
     public enum Status {
@@ -35,6 +39,9 @@ public class Charge {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Builder.Default
+    private boolean active = true;
 
     @OneToMany(mappedBy = "charge")
     private List<Payment> payments;
