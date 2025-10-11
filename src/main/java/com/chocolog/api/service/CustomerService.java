@@ -35,12 +35,16 @@ public class CustomerService {
 
     public CustomerResponseDTO save(CustomerRequestDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
+
+        String digitsOnly = customer.getPhone().replaceAll("[^0-9]", "");
+        customer.setPhone(digitsOnly);
+
         Customer savedCustomer = customerRepository.save(customer);
         return customerMapper.toResponseDTO(savedCustomer);
     }
 
     @Transactional
-    public CustomerResponseDTO update(Long id, CustomerPatchRequestDTO customerDTO) { 
+    public CustomerResponseDTO update(Long id, CustomerPatchRequestDTO customerDTO) {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found for id: " + id));
 
@@ -48,7 +52,8 @@ public class CustomerService {
             existingCustomer.setName(customerDTO.getName());
         }
         if (customerDTO.getPhone() != null) {
-            existingCustomer.setPhone(customerDTO.getPhone());
+            String digitsOnly = customerDTO.getPhone().replaceAll("[^0-9]", "");
+            existingCustomer.setPhone(digitsOnly);
         }
         if (customerDTO.getIsReseller() != null) {
             existingCustomer.setIsReseller(customerDTO.getIsReseller());
@@ -56,8 +61,7 @@ public class CustomerService {
         if (customerDTO.getNotes() != null) {
             existingCustomer.setNotes(customerDTO.getNotes());
         }
-        
-        Customer updatedCustomer = customerRepository.save(existingCustomer);
-        return customerMapper.toResponseDTO(updatedCustomer);
+
+        return customerMapper.toResponseDTO(existingCustomer);
     }
 }
