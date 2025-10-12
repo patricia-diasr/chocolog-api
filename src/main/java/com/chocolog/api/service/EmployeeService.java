@@ -37,7 +37,7 @@ public class EmployeeService {
 
     public EmployeeResponseDTO save(EmployeeRequestDTO employeeDTO) {
         employeeRepository.findByLogin(employeeDTO.getLogin()).ifPresent(e -> {
-            throw new IllegalArgumentException("O login '" + employeeDTO.getLogin() + "' já está em uso.");
+            throw new IllegalArgumentException("The login '" + employeeDTO.getLogin() + "' is already in use.");
         });
 
         Employee employee = employeeMapper.toEntity(employeeDTO);
