@@ -1,13 +1,23 @@
 package com.chocolog.api.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
-@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class FlavorResponseDTO {
 
-    private final Long id;
-    private final String name;
-    
+    private Long id;
+    private String name;
+    private List<FlavorSizeResponseDTO> sizes;
+
+    public FlavorResponseDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
 }

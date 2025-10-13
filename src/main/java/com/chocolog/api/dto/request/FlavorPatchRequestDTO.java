@@ -7,11 +7,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FlavorRequestDTO {
+public class FlavorPatchRequestDTO {
 
-    @NotBlank(message = "Name cannot be blank")
     private String name;
-
     private List<PriceRequestDTO> prices;
     
 }

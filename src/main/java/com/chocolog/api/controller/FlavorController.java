@@ -1,6 +1,7 @@
 package com.chocolog.api.controller;
 
 import com.chocolog.api.dto.request.FlavorRequestDTO;
+import com.chocolog.api.dto.request.FlavorPatchRequestDTO;
 import com.chocolog.api.dto.response.FlavorResponseDTO;
 import com.chocolog.api.service.FlavorService;
 
@@ -44,7 +45,7 @@ public class FlavorController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<FlavorResponseDTO> partialUpdateFlavor(@PathVariable Long id, @Valid @RequestBody FlavorRequestDTO flavorDTO) {
+    public ResponseEntity<FlavorResponseDTO> partialUpdateFlavor(@PathVariable Long id, @Valid @RequestBody FlavorPatchRequestDTO flavorDTO) {
         return ResponseEntity.ok(flavorService.update(id, flavorDTO));
     }
 
