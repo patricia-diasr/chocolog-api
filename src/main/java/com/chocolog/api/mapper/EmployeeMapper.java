@@ -22,6 +22,7 @@ public interface EmployeeMapper {
     @Mapping(target = "payments", ignore = true)
     @Mapping(target = "printBatches", ignore = true)
     @Mapping(target = "audits", ignore = true)
+    @Mapping(target = "active", ignore = true)
     Employee toEntity(EmployeeRequestDTO requestDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -31,5 +32,6 @@ public interface EmployeeMapper {
     @Mapping(target = "payments", ignore = true)
     @Mapping(target = "printBatches", ignore = true)
     @Mapping(target = "audits", ignore = true)
+    @Mapping(target = "active", ignore = true)
     void updateEntityFromDto(EmployeePatchRequestDTO dto, @MappingTarget Employee entity);
 }

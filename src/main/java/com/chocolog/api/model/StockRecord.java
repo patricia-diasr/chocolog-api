@@ -1,5 +1,6 @@
 package com.chocolog.api.model;
 
+import com.chocolog.api.model.StockMovement;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import lombok.*;
@@ -31,9 +32,13 @@ public class StockRecord {
     @JoinColumn(name = "size_id")
     private Size size;
 
+    private Integer quantity;
+
     private LocalDateTime productionDate;
     private LocalDateTime expirationDate;
-    private String status;
+
+    @Enumerated(EnumType.STRING) 
+    private StockMovement movementType;
 
     @Builder.Default
     private boolean active = true;
