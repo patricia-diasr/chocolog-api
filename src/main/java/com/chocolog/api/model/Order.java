@@ -7,6 +7,7 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "orders")
 @SQLDelete(sql = "UPDATE orders SET active = false WHERE id = ?")
@@ -36,7 +36,9 @@ public class Order {
     private LocalDateTime creationDate;
     private LocalDate expectedPickupDate;
     private LocalDateTime pickupDate;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
@@ -44,9 +46,11 @@ public class Order {
     @Builder.Default
     private boolean active = true;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<Charge> charges;
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Charge charges;
+
 }

@@ -30,12 +30,13 @@ public class Charge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private BigDecimal totalAmount;
+    private BigDecimal subTotalAmount;
     private BigDecimal discount;
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     private Status status;

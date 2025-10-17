@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "order_items")
 @SQLDelete(sql = "UPDATE order_items SET active = false WHERE id = ?")
@@ -43,7 +42,9 @@ public class OrderItem {
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
     private Boolean onDemand;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
