@@ -84,19 +84,31 @@ public class OrderService {
 
         if (orderDTO.getStatus() != null) {
             OrderStatus newStatus = OrderStatus.valueOf(orderDTO.getStatus());
-            if (newStatus != OrderStatus.CANCELLED) {
-                throw new IllegalArgumentException("Order status can only be manually updated to CANCELLED.");
+
+            if (newStatus == OrderStatus.COMPLETED) {
+                boolean allItemsReady = existingOrder.getOrderItems().stream()
+                        .allMatch(item -> item.getStatus() == OrderStatus.READY_FOR_PICKUP || item.getStatus() == OrderStatus.COMPLETED);
+
+                if (!allItemsReady) {
+                    throw new IllegalStateException("Order can only be marked as COMPLETED if all items are READY_FOR_PICKUP or already COMPLETED.");
+                }
+
+                existingOrder.setStatus(OrderStatus.COMPLETED);
+                completeOrderItemsAndAdjustStock(existingOrder);
+
+            } else if (newStatus == OrderStatus.CANCELLED) {
+                boolean hasCompletedItems = existingOrder.getOrderItems().stream()
+                        .anyMatch(item -> item.getStatus() == OrderStatus.COMPLETED);
+
+                if (hasCompletedItems) {
+                    throw new IllegalStateException("Cannot cancel an order that has completed items.");
+                }
+
+                existingOrder.setStatus(OrderStatus.CANCELLED);
+                cancelOrderItemsAndReturnStock(existingOrder);
+            } else {
+                throw new IllegalArgumentException("Order status can only be manually updated to COMPLETED or CANCELLED.");
             }
-
-            boolean hasCompletedItems = existingOrder.getOrderItems().stream()
-                    .anyMatch(item -> item.getStatus() == OrderStatus.COMPLETED);
-
-            if (hasCompletedItems) {
-                throw new IllegalStateException("Cannot cancel an order that has completed items.");
-            }
-
-            existingOrder.setStatus(OrderStatus.CANCELLED);
-            cancelOrderItemsAndReturnStock(existingOrder);
         }
 
         if (orderDTO.getExpectedPickupDate() != null) {
@@ -113,7 +125,7 @@ public class OrderService {
                 throw new IllegalStateException("Order does not have an associated charge to update.");
             }
             charge.setDiscount(orderDTO.getDiscount());
-            BigDecimal totalAmount = charge.getSubTotalAmount().subtract(orderDTO.getDiscount());
+            BigDecimal totalAmount = charge.getSubtotalAmount().subtract(orderDTO.getDiscount());
             charge.setTotalAmount(totalAmount);
             chargeRepository.save(charge);
         }
@@ -149,7 +161,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + orderId));
 
-        BigDecimal subTotalAmount = order.getOrderItems().stream()
+        BigDecimal subtotalAmount = order.getOrderItems().stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -158,8 +170,8 @@ public class OrderService {
             throw new IllegalStateException("Order does not have an associated charge to update.");
         }
 
-        charge.setSubTotalAmount(subTotalAmount);
-        BigDecimal totalAmount = subTotalAmount.subtract(charge.getDiscount());
+        charge.setSubtotalAmount(subtotalAmount);
+        BigDecimal totalAmount = subtotalAmount.subtract(charge.getDiscount());
         charge.setTotalAmount(totalAmount);
 
         chargeRepository.save(charge);
@@ -186,17 +198,17 @@ public class OrderService {
     private Charge createChargeForOrder(Order order, BigDecimal discount) {
         BigDecimal discountValue = discount != null ? discount : BigDecimal.ZERO;
 
-        BigDecimal subTotalAmount = order.getOrderItems().stream()
+        BigDecimal subtotalAmount = order.getOrderItems().stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = subTotalAmount.subtract(discountValue);
+        BigDecimal totalAmount = subtotalAmount.subtract(discountValue);
 
         Charge charge = new Charge();
         charge.setDiscount(discountValue);
-        charge.setSubTotalAmount(subTotalAmount);
+        charge.setSubtotalAmount(subtotalAmount);
         charge.setTotalAmount(totalAmount);
-        charge.setStatus(Charge.Status.UNPAID);
+        charge.setStatus(ChargeStatus.UNPAID);
         charge.setOrder(order);
 
         return charge;
@@ -230,6 +242,15 @@ public class OrderService {
         }
 
         return item;
+    }
+
+    private void completeOrderItemsAndAdjustStock(Order order) {
+        for (OrderItem item : order.getOrderItems()) {
+            if (!item.getOnDemand() && item.getStatus() != OrderStatus.COMPLETED) {
+                adjustTotalStock(item.getFlavor1(), item.getSize(), -item.getQuantity());
+            }
+            item.setStatus(OrderStatus.COMPLETED);
+        }
     }
 
     private void cancelOrderItemsAndReturnStock(Order order) {

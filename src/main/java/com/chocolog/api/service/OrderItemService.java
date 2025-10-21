@@ -69,16 +69,14 @@ public class OrderItemService {
 
         updateOnDemandStatus(item);
         boolean isNowOnDemand = item.getOnDemand();
-
+        
         if (wasOnDemand != isNowOnDemand) {
             if (!wasOnDemand && isNowOnDemand && originalStatus == OrderStatus.READY_FOR_PICKUP) {
                 item.setStatus(OrderStatus.PENDING);
             } else if (wasOnDemand && !isNowOnDemand && originalStatus == OrderStatus.PENDING) {
                 item.setStatus(OrderStatus.READY_FOR_PICKUP);
             }
-        }
-
-        if (patchDTO.getStatus() != null) {
+        } else if (patchDTO.getStatus() != null) {
             handleManualStatusUpdate(item, OrderStatus.valueOf(patchDTO.getStatus()));
         }
 

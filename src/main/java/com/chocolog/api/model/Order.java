@@ -5,7 +5,6 @@ import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class Order {
     private Employee employee;
 
     private LocalDateTime creationDate;
-    private LocalDate expectedPickupDate;
+    private LocalDateTime expectedPickupDate;
     private LocalDateTime pickupDate;
 
     @Enumerated(EnumType.STRING)

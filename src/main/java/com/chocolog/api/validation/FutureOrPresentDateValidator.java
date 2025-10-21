@@ -2,16 +2,16 @@ package com.chocolog.api.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class FutureOrPresentDateValidator implements ConstraintValidator<FutureOrPresentDate, LocalDate> {
+public class FutureOrPresentDateValidator implements ConstraintValidator<FutureOrPresentDate, LocalDateTime> {
 
     @Override
-    public boolean isValid(LocalDate dateToValidate, ConstraintValidatorContext context) {
+    public boolean isValid(LocalDateTime dateToValidate, ConstraintValidatorContext context) {
         if (dateToValidate == null) {
             return true;
         }
 
-        return !dateToValidate.isBefore(LocalDate.now());
+        return !dateToValidate.isBefore(LocalDateTime.now());
     }
 }

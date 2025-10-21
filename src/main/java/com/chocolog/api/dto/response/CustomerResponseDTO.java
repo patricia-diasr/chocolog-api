@@ -11,5 +11,6 @@ public class CustomerResponseDTO {
     private final String name;
     private final String phone;
     private final Boolean isReseller;
+    private final String notes;
 
 }

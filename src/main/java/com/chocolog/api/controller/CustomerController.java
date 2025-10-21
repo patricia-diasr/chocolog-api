@@ -49,10 +49,4 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseDTO> partialUpdateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerPatchRequestDTO customerDTO) {
         return ResponseEntity.ok(customerService.update(id, customerDTO));
     }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) 
-    public void deleteCustomer(@PathVariable Long id) {
-        customerService.deleteById(id);
-    }
 }

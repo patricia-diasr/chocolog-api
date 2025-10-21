@@ -64,11 +64,4 @@ public class CustomerService {
 
         return customerMapper.toResponseDTO(existingCustomer);
     }
-
-    public void deleteById(Long id) {
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Customer not found for id: " + id));
-
-        customerRepository.delete(customer);
-    }
 }

@@ -1,7 +1,7 @@
 package com.chocolog.api.model;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "employees")
 @SQLDelete(sql = "UPDATE employees SET active = false WHERE id = ?")
-@Where(clause = "active = true")
+@SQLRestriction("active = true")
 public class Employee {
 
     @Id

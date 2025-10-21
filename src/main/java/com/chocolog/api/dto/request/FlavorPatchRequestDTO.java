@@ -1,6 +1,6 @@
 package com.chocolog.api.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
@@ -10,6 +10,8 @@ import java.util.List;
 public class FlavorPatchRequestDTO {
 
     private String name;
+
+    @JsonProperty("sizes")
     private List<PriceRequestDTO> prices;
-    
+
 }

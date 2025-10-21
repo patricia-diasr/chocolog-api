@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -22,7 +22,7 @@ public class OrderRequestDTO {
 
     @NotNull(message = "Expected pickup date cannot be null")
     @FutureOrPresentDate
-    private LocalDate expectedPickupDate;
+    private LocalDateTime expectedPickupDate;
 
     private String notes;
     private BigDecimal discount;

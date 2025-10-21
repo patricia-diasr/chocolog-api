@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface ChargeMapper {
 
     @Mapping(source = "order.id", target = "orderId")
+    @Mapping(source = "order.creationDate", target = "date")
     ChargeResponseDTO toResponseDTO(Charge charge);
 
 }

@@ -20,12 +20,6 @@ import java.util.List;
 @Where(clause = "active = true")
 public class Charge {
 
-    public enum Status {
-        PAID,
-        UNPAID,
-        PARTIAL
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,12 +28,12 @@ public class Charge {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private BigDecimal subTotalAmount;
+    private BigDecimal subtotalAmount;
     private BigDecimal discount;
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private ChargeStatus status;
 
     @Builder.Default
     private boolean active = true;

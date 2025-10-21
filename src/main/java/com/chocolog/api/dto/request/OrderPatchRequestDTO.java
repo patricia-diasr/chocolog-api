@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class OrderPatchRequestDTO {
     private String status;
 
     @FutureOrPresentDate
-    private LocalDate expectedPickupDate;
+    private LocalDateTime expectedPickupDate;
 
     private String notes;
     private BigDecimal discount;
