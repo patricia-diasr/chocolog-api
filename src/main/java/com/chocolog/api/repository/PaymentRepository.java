@@ -1,14 +1,14 @@
 package com.chocolog.api.repository;
 
-import com.chocolog.api.model.Charge;
+import com.chocolog.api.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface ChargeRepository extends JpaRepository<Charge, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    Optional<Charge> findByOrderId(Long orderId);
+    Optional<Payment> findByIdAndChargeId(Long id, Long chargeId);
 
 }
