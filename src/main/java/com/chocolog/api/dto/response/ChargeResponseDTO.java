@@ -21,7 +21,7 @@ public class ChargeResponseDTO {
     private final BigDecimal totalAmount;
     private final ChargeStatus status;
     private final LocalDateTime date;
-    private final BigDecimal amountDue;
+    private final BigDecimal dueAmount;
     private final List<PaymentResponseDTO> payments;
 
 }

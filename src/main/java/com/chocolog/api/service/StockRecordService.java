@@ -62,7 +62,7 @@ public class StockRecordService {
             stock.setTotalQuantity(stock.getTotalQuantity() + quantityChange);
             stock.setRemainingQuantity(stock.getRemainingQuantity() + quantityChange); 
         } else {
-            if (stock.getRemainingQuantity() < quantityChange) {
+            if (stock.getTotalQuantity() < quantityChange) {
                 throw new IllegalArgumentException("Insufficient stock for flavor: " + flavor.getName() + ", size: " + size.getName());
             }
             stock.setTotalQuantity(stock.getTotalQuantity() - quantityChange);

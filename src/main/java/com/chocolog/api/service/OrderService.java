@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,31 @@ public class OrderService {
     private final ProductPriceService productPriceService;
     private final StockRepository stockRepository;
     private final OrderMapper orderMapper;
+
+    public List<OrderResponseDTO> findAllByDateFilter(String dateString) {
+        LocalDate startDate;
+        LocalDate endDate;
+
+        if (dateString.length() == 7) {
+            YearMonth yearMonth = YearMonth.parse(dateString);
+            startDate = yearMonth.atDay(1);
+            endDate = yearMonth.atEndOfMonth();
+        } else if (dateString.length() == 10) {
+            startDate = LocalDate.parse(dateString);
+            endDate = startDate;
+        } else {
+            throw new IllegalArgumentException("Invalid date format. Use YYYY-MM or YYYY-MM-DD.");
+        }
+
+        List<Order> orders = orderRepository.findByExpectedPickupDateBetweenOrderByExpectedPickupDate(
+                startDate.atStartOfDay(),
+                endDate.atTime(23, 59, 59, 999999999)
+        );
+
+        return orders.stream()
+                .map(orderMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<OrderResponseDTO> findAllByCustomerId(Long customerId) {
         if (!customerRepository.existsById(customerId)) {

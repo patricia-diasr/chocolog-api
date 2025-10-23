@@ -24,4 +24,7 @@ public class PaymentRequestDTO {
     @NotEmpty
     private String paymentMethod;
 
+    @NotNull(message = "Payment date cannot be null")
+    private LocalDateTime paymentDate;
+
 }

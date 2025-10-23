@@ -14,11 +14,11 @@ public interface ChargeMapper {
 
     @Mapping(source = "order.id", target = "orderId")
     @Mapping(source = "order.creationDate", target = "date")
-    @Mapping(target = "amountDue", source = "charge", qualifiedByName = "calculateAmountDue")
+    @Mapping(target = "dueAmount", source = "charge", qualifiedByName = "calculateDueAmount")
     ChargeResponseDTO toResponseDTO(Charge charge);
 
-    @Named("calculateAmountDue")
-    default BigDecimal calculateAmountDue(Charge charge) {
+    @Named("calculateDueAmount")
+    default BigDecimal calculateDueAmount(Charge charge) {
         if (charge == null || charge.getTotalAmount() == null) {
             return BigDecimal.ZERO;
         }
@@ -27,8 +27,8 @@ public interface ChargeMapper {
                 .map(Payment::getPaidAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal amountDue = charge.getTotalAmount().subtract(totalPaid);
+        BigDecimal dueAmount = charge.getTotalAmount().subtract(totalPaid);
 
-        return amountDue.compareTo(BigDecimal.ZERO) > 0 ? amountDue : BigDecimal.ZERO;
+        return dueAmount.compareTo(BigDecimal.ZERO) > 0 ? dueAmount : BigDecimal.ZERO;
     }
 }

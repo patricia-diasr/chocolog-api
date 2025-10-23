@@ -42,7 +42,7 @@ public class PaymentService {
         payment.setEmployee(employee);
         payment.setPaidAmount(paymentDTO.getPaidAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setPaymentDate(LocalDateTime.now());
+        payment.setPaymentDate(paymentDTO.getPaymentDate());
         Payment savedPayment = paymentRepository.save(payment);
 
         charge.getPayments().add(savedPayment);
@@ -56,8 +56,15 @@ public class PaymentService {
         Charge charge = findChargeOrFail(orderId, customerId);
         Payment payment = findPaymentOrFail(paymentId, charge.getId());
 
-        payment.setPaidAmount(paymentDTO.getPaidAmount());
-        payment.setPaymentMethod(paymentDTO.getPaymentMethod());
+        if (paymentDTO.getPaidAmount() != null) {
+            payment.setPaidAmount(paymentDTO.getPaidAmount());
+        }
+        if (paymentDTO.getPaymentMethod() != null) {
+            payment.setPaymentMethod(paymentDTO.getPaymentMethod());
+        }
+        if (paymentDTO.getPaymentDate() != null) {
+            payment.setPaymentDate(paymentDTO.getPaymentDate());
+        }
 
         Payment updatedPayment = paymentRepository.save(payment);
         updateChargeStatus(charge);
