@@ -6,6 +6,7 @@ import lombok.*;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,5 +40,5 @@ public class Charge {
     private boolean active = true;
 
     @OneToMany(mappedBy = "charge")
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
 }

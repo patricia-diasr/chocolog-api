@@ -39,4 +39,3 @@ public class Payment {
     @Builder.Default
     private boolean active = true;
 }
-

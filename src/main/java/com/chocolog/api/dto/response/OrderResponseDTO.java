@@ -11,8 +11,8 @@ import java.util.List;
 public class OrderResponseDTO {
 
     private final Long id;
-    private final Long customerId;
-    private final Long employeeId;
+    private final CustomerResponseDTO customer;
+    private final EmployeeResponseDTO employee;
     private final LocalDateTime creationDate;
     private final LocalDateTime expectedPickupDate;
     private final LocalDateTime pickupDate;
