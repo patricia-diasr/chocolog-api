@@ -1,5 +1,6 @@
 package com.chocolog.api.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItemResponseDTO {
 
     private final Long id;
@@ -21,6 +23,7 @@ public class OrderItemResponseDTO {
     private final BigDecimal unitPrice;
     private final BigDecimal totalPrice;
     private final Boolean onDemand;
+    private final Boolean isPrinted;
     private final String status;
     private final String notes;
 

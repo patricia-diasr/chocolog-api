@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -25,6 +26,13 @@ public class OrderItemService {
     private final ProductPriceService productPriceService;
     private final OrderService orderService;
     private final OrderItemMapper orderItemMapper;
+
+    public List<OrderItemResponseDTO> findAll(Boolean onDemand) {
+        if (onDemand != null && onDemand) {
+            return orderItemRepository.findAllAsDTOByOnDemandTrue();
+        }
+        return orderItemRepository.findAllAsDTO();
+    }
 
     @Transactional
     public OrderItemResponseDTO addItemToOrder(Long customerId, Long orderId, OrderItemRequestDTO itemDTO) {

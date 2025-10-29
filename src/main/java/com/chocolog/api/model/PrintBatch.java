@@ -6,6 +6,7 @@ import lombok.*;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,7 @@ public class PrintBatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "printed_by_employee_id")
     private Employee printedBy;
 
@@ -33,6 +34,10 @@ public class PrintBatch {
     @Builder.Default
     private boolean active = true;
 
-    @OneToMany(mappedBy = "printBatch")
-    private List<PrintBatchItem> items;
+    @Builder.Default
+    @OneToMany(mappedBy = "printBatch", fetch = FetchType.LAZY)
+    private List<PrintBatchItem> items = new ArrayList<>();
+
+    @Column(name = "file_system_path")
+    private String fileSystemPath;
 }

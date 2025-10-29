@@ -39,6 +39,7 @@ public class Charge {
     @Builder.Default
     private boolean active = true;
 
+    @Builder.Default
     @OneToMany(mappedBy = "charge")
     private List<Payment> payments = new ArrayList<>();
 }

@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'com.itextpdf:layout:8.0.4'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
