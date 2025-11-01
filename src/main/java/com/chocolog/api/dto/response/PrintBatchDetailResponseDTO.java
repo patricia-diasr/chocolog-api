@@ -1,8 +1,5 @@
 package com.chocolog.api.dto.response;
 
-import com.chocolog.api.model.Employee;
-import com.chocolog.api.model.PrintBatchItem;
-
 import lombok.Getter;
 import lombok.Setter;
 

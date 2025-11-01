@@ -28,14 +28,14 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
 
     @Transactional
-    public PaymentResponseDTO addPayment(Long customerId, Long orderId, PaymentRequestDTO paymentDTO) {
+    public PaymentResponseDTO addPayment(Long customerId, Long orderId, Long employeeId, PaymentRequestDTO paymentDTO) {
         Charge charge = findChargeOrFail(orderId, customerId);
 
         if (charge.getStatus() == ChargeStatus.PAID) {
             throw new IllegalStateException("This charge is already paid.");
         }
 
-        Employee employee = findEmployeeOrFail(paymentDTO.getEmployeeId());
+        Employee employee = findEmployeeOrFail(employeeId);
 
         Payment payment = new Payment();
         payment.setCharge(charge);

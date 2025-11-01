@@ -17,9 +17,6 @@ import java.util.List;
 @Setter
 public class OrderRequestDTO {
 
-    @NotNull(message = "Employee ID cannot be null")
-    private Long employeeId;
-
     @NotNull(message = "Expected pickup date cannot be null")
     @FutureOrPresentDate
     private LocalDateTime expectedPickupDate;

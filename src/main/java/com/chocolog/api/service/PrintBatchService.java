@@ -50,9 +50,9 @@ public class PrintBatchService {
     }
 
     @Transactional
-    public PrintBatchDetailResponseDTO save(PrintBatchRequestDTO requestDTO) {
-        Employee employee = employeeRepository.findById(requestDTO.getEmployeeId())
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found for id: " + requestDTO.getEmployeeId()));
+    public PrintBatchDetailResponseDTO save(PrintBatchRequestDTO requestDTO, Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found for id: " + employeeId));
 
         PrintBatch batch = PrintBatch.builder()
                 .printedBy(employee)

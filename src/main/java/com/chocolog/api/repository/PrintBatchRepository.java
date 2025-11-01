@@ -15,9 +15,6 @@ public interface PrintBatchRepository extends JpaRepository<PrintBatch, Long> {
     @Query("SELECT b FROM PrintBatch b JOIN FETCH b.printedBy")
     List<PrintBatch> findAllWithEmployee();
 
-    @Query("SELECT b FROM PrintBatch b JOIN FETCH b.printedBy LEFT JOIN FETCH b.items WHERE b.id = :id")
-    Optional<PrintBatch> findByIdWithEmployeeAndItems(@Param("id") Long id);
-
     @Query("SELECT b FROM PrintBatch b " +
             "JOIN FETCH b.printedBy " +
             "LEFT JOIN FETCH b.items i " +

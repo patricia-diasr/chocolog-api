@@ -3,11 +3,13 @@ package com.chocolog.api.controller;
 import com.chocolog.api.dto.request.PaymentPatchRequestDTO;
 import com.chocolog.api.dto.request.PaymentRequestDTO;
 import com.chocolog.api.dto.response.PaymentResponseDTO;
+import com.chocolog.api.security.AppUserDetails;
 import com.chocolog.api.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,9 +26,12 @@ public class PaymentController {
     public ResponseEntity<PaymentResponseDTO> addItemToOrder(
             @PathVariable Long customerId,
             @PathVariable Long orderId,
-            @Valid @RequestBody PaymentRequestDTO paymentDTO) {
+            @Valid @RequestBody PaymentRequestDTO paymentDTO,
+            Authentication authentication) {
 
-        PaymentResponseDTO createdItem = paymentService.addPayment(customerId, orderId, paymentDTO);
+        AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+        Long employeeId = userDetails.getEmployeeId();
+        PaymentResponseDTO createdItem = paymentService.addPayment(customerId, orderId, employeeId, paymentDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

@@ -34,18 +34,23 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             oi.size.name,
             oi.flavor1.id,
             oi.flavor1.name,
-            f2.id,   /* Use o alias f2 */
-            f2.name, /* Use o alias f2 */
+            f2.id,   
+            f2.name, 
             oi.quantity,
             oi.unitPrice,
             oi.totalPrice,
             oi.onDemand,
             (EXISTS (SELECT 1 FROM PrintBatchItem pbi WHERE pbi.orderItem = oi)),
             CAST(oi.status AS string),
-            oi.notes
+            oi.notes,
+            c.id,
+            c.name,
+            c.phone,
+            oi.order.expectedPickupDate
         )
         FROM OrderItem oi
-        LEFT JOIN oi.flavor2 f2 /* Adicione este LEFT JOIN explícito */
+        LEFT JOIN oi.flavor2 f2
+        LEFT JOIN oi.order.customer c
     """)
     List<OrderItemResponseDTO> findAllAsDTO();
 
@@ -57,18 +62,23 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             oi.size.name,
             oi.flavor1.id,
             oi.flavor1.name,
-            f2.id,   /* Use o alias f2 */
-            f2.name, /* Use o alias f2 */
+            f2.id,
+            f2.name,
             oi.quantity,
             oi.unitPrice,
             oi.totalPrice,
             oi.onDemand,
             (EXISTS (SELECT 1 FROM PrintBatchItem pbi WHERE pbi.orderItem = oi)),
             CAST(oi.status AS string),
-            oi.notes
+            oi.notes,
+            c.id,
+            c.name,
+            c.phone,
+            oi.order.expectedPickupDate
         )
         FROM OrderItem oi
-        LEFT JOIN oi.flavor2 f2 /* Adicione este LEFT JOIN explícito */
+        LEFT JOIN oi.flavor2 f2
+        LEFT JOIN oi.order.customer c
         WHERE oi.onDemand = true
     """)
     List<OrderItemResponseDTO> findAllAsDTOByOnDemandTrue();

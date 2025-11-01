@@ -73,9 +73,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDTO create(Long customerId, OrderRequestDTO orderDTO) {
+    public OrderResponseDTO create(Long customerId, OrderRequestDTO orderDTO, Long employeeId) {
         Customer customer = findCustomerOrFail(customerId);
-        Employee employee = findEmployeeOrFail(orderDTO.getEmployeeId());
+        Employee employee = findEmployeeOrFail(employeeId);
 
         Order order = new Order();
         order.setCustomer(customer);

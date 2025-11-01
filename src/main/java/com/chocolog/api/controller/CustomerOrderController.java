@@ -3,10 +3,12 @@ package com.chocolog.api.controller;
 import com.chocolog.api.dto.request.OrderPatchRequestDTO;
 import com.chocolog.api.dto.request.OrderRequestDTO;
 import com.chocolog.api.dto.response.OrderResponseDTO;
+import com.chocolog.api.security.AppUserDetails;
 import com.chocolog.api.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -31,8 +33,10 @@ public class CustomerOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@PathVariable Long customerId, @Valid @RequestBody OrderRequestDTO orderDTO) {
-        OrderResponseDTO createdOrder = orderService.create(customerId, orderDTO);
+    public ResponseEntity<OrderResponseDTO> createOrder(@PathVariable Long customerId, @Valid @RequestBody OrderRequestDTO orderDTO, Authentication authentication) {
+        AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+        Long employeeId = userDetails.getEmployeeId();
+        OrderResponseDTO createdOrder = orderService.create(customerId, orderDTO, employeeId);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

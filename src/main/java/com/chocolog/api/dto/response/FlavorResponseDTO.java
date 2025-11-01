@@ -15,9 +15,4 @@ public class FlavorResponseDTO {
     private String name;
     private List<FlavorSizeResponseDTO> sizes;
 
-    public FlavorResponseDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
 }

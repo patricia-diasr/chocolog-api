@@ -2,6 +2,7 @@ package com.chocolog.api.controller;
 
 import com.chocolog.api.dto.request.PrintBatchRequestDTO;
 import com.chocolog.api.dto.response.*;
+import com.chocolog.api.security.AppUserDetails;
 import com.chocolog.api.service.OrderItemService;
 import com.chocolog.api.service.OrderService;
 import com.chocolog.api.service.PrintBatchService;
@@ -11,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -52,8 +54,11 @@ public class OrderController {
     }
 
     @PostMapping("/print-batchs")
-    public ResponseEntity<PrintBatchDetailResponseDTO> createPrintBatch(@Valid @RequestBody PrintBatchRequestDTO printBatchDTO) {
-        PrintBatchDetailResponseDTO createdPrint = printBatchService.save(printBatchDTO);
+    public ResponseEntity<PrintBatchDetailResponseDTO> createPrintBatch(@Valid @RequestBody PrintBatchRequestDTO printBatchDTO, Authentication authentication) {
+        AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+        Long employeeId = userDetails.getEmployeeId();
+
+        PrintBatchDetailResponseDTO createdPrint = printBatchService.save(printBatchDTO, employeeId);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

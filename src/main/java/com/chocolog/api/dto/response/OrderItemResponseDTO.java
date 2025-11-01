@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -26,5 +27,9 @@ public class OrderItemResponseDTO {
     private final Boolean isPrinted;
     private final String status;
     private final String notes;
+    private final Long customerId;
+    private final String customerName;
+    private final String customerPhone;
+    private final LocalDateTime expectedPickupDate;
 
 }
