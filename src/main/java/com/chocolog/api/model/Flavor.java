@@ -1,10 +1,15 @@
 package com.chocolog.api.model;
 
+import com.chocolog.api.audit.AuditListener;
+import com.chocolog.api.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import lombok.*;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +22,8 @@ import java.util.List;
 @Table(name = "flavors")
 @SQLDelete(sql = "UPDATE flavors SET active = false WHERE id = ?")
 @Where(clause = "active = true")
-public class Flavor {
+@EntityListeners(AuditListener.class)
+public class Flavor implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,18 +34,33 @@ public class Flavor {
     @Builder.Default
     private boolean active = true;
 
+    @Builder.Default
     @OneToMany(mappedBy = "flavor1")
-    private List<OrderItem> flavor1Orders;
+    @JsonManagedReference("flavor1-orderitem")
+    private List<OrderItem> flavor1Orders = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flavor2")
-    private List<OrderItem> flavor2Orders;
+    @JsonManagedReference("flavor2-orderitem")
+    private List<OrderItem> flavor2Orders = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flavor")
-    private List<ProductPrice> productPrices;
+    @JsonManagedReference("flavor-prices")
+    private List<ProductPrice> productPrices = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flavor")
-    private List<Stock> stocks;
+    @JsonManagedReference("flavor-stocks")
+    private List<Stock> stocks = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flavor")
-    private List<StockRecord> stockRecords;
+    @JsonManagedReference("flavor-stockrecords")
+    private List<StockRecord> stockRecords = new ArrayList<>();
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }

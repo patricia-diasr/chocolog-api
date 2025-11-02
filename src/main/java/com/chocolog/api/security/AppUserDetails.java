@@ -23,6 +23,10 @@ public class AppUserDetails implements UserDetails {
         return this.employee.getRole();
     }
 
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(this.authority);
@@ -32,6 +36,7 @@ public class AppUserDetails implements UserDetails {
     public String getPassword() {
         return this.employee.getPasswordHash();
     }
+
 
     @Override
     public String getUsername() {

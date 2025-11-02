@@ -312,3 +312,6 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: C:/Users/patrici
 	at org.h2.mvstore.SingleFileStore.open(SingleFileStore.java:81)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 58 more
+2025-11-01 14:14:56.201700-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete[*]* FROM AUDIT"; expected "identifier"; SQL statement:
+delete* FROM AUDIT [42001-232]

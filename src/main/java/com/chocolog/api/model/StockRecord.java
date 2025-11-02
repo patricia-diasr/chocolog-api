@@ -1,6 +1,9 @@
 package com.chocolog.api.model;
 
+import com.chocolog.api.audit.AuditListener;
+import com.chocolog.api.audit.Auditable;
 import com.chocolog.api.model.StockMovement;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import lombok.*;
@@ -18,7 +21,8 @@ import java.time.LocalDateTime;
 @Table(name = "stock_records")
 @SQLDelete(sql = "UPDATE stock_records SET active = false WHERE id = ?")
 @Where(clause = "active = true")
-public class StockRecord {
+@EntityListeners(AuditListener.class)
+public class StockRecord implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +30,12 @@ public class StockRecord {
 
     @ManyToOne
     @JoinColumn(name = "flavor_id")
+    @JsonBackReference("flavor-stockrecords")
     private Flavor flavor;
 
     @ManyToOne
     @JoinColumn(name = "size_id")
+    @JsonBackReference("size-stockrecords")
     private Size size;
 
     private Integer quantity;
@@ -42,4 +48,9 @@ public class StockRecord {
 
     @Builder.Default
     private boolean active = true;
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }

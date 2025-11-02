@@ -1,10 +1,15 @@
 package com.chocolog.api.model;
 
+import com.chocolog.api.audit.AuditListener;
+import com.chocolog.api.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import lombok.*;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +22,8 @@ import java.util.List;
 @Table(name = "employees")
 @SQLDelete(sql = "UPDATE employees SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
-public class Employee {
+@EntityListeners(AuditListener.class)
+public class Employee implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,15 +42,28 @@ public class Employee {
     @Builder.Default
     private boolean active = true;
 
+    @Builder.Default
     @OneToMany(mappedBy = "employee")
-    private List<Order> orders;
+    @JsonManagedReference("employee-orders")
+    private List<Order> orders = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "employee")
-    private List<Payment> payments;
+    @JsonManagedReference("employee-payments")
+    private List<Payment> payments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "printedBy")
-    private List<PrintBatch> printBatches;
+    @JsonManagedReference("employee-printbatches")
+    private List<PrintBatch> printBatches = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "employee")
-    private List<Audit> audits;
+    @JsonManagedReference("employee-audits")
+    private List<Audit> audits = new ArrayList<>();
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }

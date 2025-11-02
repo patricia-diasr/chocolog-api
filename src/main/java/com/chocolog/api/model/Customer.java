@@ -1,11 +1,16 @@
 package com.chocolog.api.model;
 
+import com.chocolog.api.audit.AuditListener;
+import com.chocolog.api.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import lombok.*;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,7 +23,8 @@ import java.util.List;
 @Table(name = "customers")
 @SQLDelete(sql = "UPDATE customers SET active = false WHERE id = ?")
 @Where(clause = "active = true")
-public class Customer {
+@EntityListeners(AuditListener.class)
+public class Customer implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +40,13 @@ public class Customer {
     @Builder.Default
     private boolean active = true;
 
+    @Builder.Default
     @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    @JsonManagedReference("customer-orders")
+    private List<Order> orders = new ArrayList<>();
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
 }
