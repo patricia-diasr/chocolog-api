@@ -1,6 +1,7 @@
 package com.chocolog.api.controller;
 
 import com.chocolog.api.dto.response.reports.ReportsDTO;
+import com.chocolog.api.model.PeriodType;
 import com.chocolog.api.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,15 +23,15 @@ public class ReportController {
 
     @GetMapping("/dashboard")
     public ResponseEntity<ReportsDTO> getDashboardReports(
-            @RequestParam(name = "startDate", required = true)
+            @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-
-            @RequestParam(name = "endDate", required = true)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam(name = "endDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(name = "periodType", defaultValue = "WEEK") PeriodType periodType
     ) {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        return ResponseEntity.ok(reportService.getDashboardReports(startDateTime, endDateTime));
+        return ResponseEntity.ok(reportService.getDashboardReports(startDateTime, endDateTime, periodType));
     }
 }

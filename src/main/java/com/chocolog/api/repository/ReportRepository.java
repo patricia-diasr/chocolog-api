@@ -41,6 +41,57 @@ public interface ReportRepository extends JpaRepository<Order, Long> {
                 .toList();
     }
 
+    @Query("""
+        SELECT 
+            function('YEAR', o.creationDate),
+            function('MONTH', o.creationDate),
+            function('DAY', o.creationDate),
+            CAST(SUM(oi.quantity) as int)
+        FROM Order o
+        JOIN o.orderItems oi
+        WHERE o.creationDate BETWEEN :startDate AND :endDate
+        AND o.status != 'CANCELLED'
+        AND o.active = true AND oi.active = true
+        GROUP BY function('YEAR', o.creationDate), function('MONTH', o.creationDate), function('DAY', o.creationDate)
+        ORDER BY function('YEAR', o.creationDate), function('MONTH', o.creationDate), function('DAY', o.creationDate)
+    """)
+    List<Object[]> getRawSalesByDay(LocalDateTime startDate, LocalDateTime endDate);
+
+    default List<SalesByPeriodDTO> getSalesByDay(LocalDateTime startDate, LocalDateTime endDate) {
+        return getRawSalesByDay(startDate, endDate).stream()
+                .map(arr -> {
+                    String period = String.format("%d-%02d-%02d", arr[0], arr[1], arr[2]);
+                    Integer quantity = ((Number) arr[3]).intValue();
+                    return new SalesByPeriodDTO(period, quantity);
+                })
+                .toList();
+    }
+
+    @Query("""
+        SELECT 
+            function('YEAR', o.creationDate),
+            function('MONTH', o.creationDate),
+            CAST(SUM(oi.quantity) as int)
+        FROM Order o
+        JOIN o.orderItems oi
+        WHERE o.creationDate BETWEEN :startDate AND :endDate
+        AND o.status != 'CANCELLED'
+        AND o.active = true AND oi.active = true
+        GROUP BY function('YEAR', o.creationDate), function('MONTH', o.creationDate)
+        ORDER BY function('YEAR', o.creationDate), function('MONTH', o.creationDate)
+    """)
+    List<Object[]> getRawSalesByMonth(LocalDateTime startDate, LocalDateTime endDate);
+
+    default List<SalesByPeriodDTO> getSalesByMonth(LocalDateTime startDate, LocalDateTime endDate) {
+        return getRawSalesByMonth(startDate, endDate).stream()
+                .map(arr -> {
+                    String period = String.format("%d-%02d", arr[0], arr[1]);
+                    Integer quantity = ((Number) arr[2]).intValue();
+                    return new SalesByPeriodDTO(period, quantity);
+                })
+                .toList();
+    }
+
     @Query(value = """
         SELECT 
             o.status, 
@@ -106,6 +157,77 @@ public interface ReportRepository extends JpaRepository<Order, Long> {
         return getRawRevenueVsReceivedByWeek(startDate, endDate).stream()
                 .map(arr -> {
                     String period = arr[0] + "-W" + arr[1];
+                    BigDecimal revenue = (BigDecimal) arr[2];
+                    BigDecimal received = (BigDecimal) arr[3];
+
+                    return new RevenueVsReceivedDTO(
+                            period,
+                            revenue,
+                            received != null ? received : BigDecimal.ZERO
+                    );
+                })
+                .toList();
+    }
+
+    @Query("""
+        SELECT 
+            function('YEAR', o.creationDate),
+            function('MONTH', o.creationDate),
+            function('DAY', o.creationDate),
+            SUM(c.totalAmount),
+            SUM(p.paidAmount)
+        FROM Order o
+        JOIN o.charges c
+        LEFT JOIN c.payments p
+        WHERE o.creationDate BETWEEN :startDate AND :endDate
+        AND o.active = true
+        AND c.active = true
+        AND o.status != 'CANCELLED'
+        AND (p.active = true OR p.id IS NULL)
+        GROUP BY function('YEAR', o.creationDate), function('MONTH', o.creationDate), function('DAY', o.creationDate)
+        ORDER BY function('YEAR', o.creationDate), function('MONTH', o.creationDate), function('DAY', o.creationDate)
+    """)
+    List<Object[]> getRawRevenueVsReceivedByDay(LocalDateTime startDate, LocalDateTime endDate);
+
+    default List<RevenueVsReceivedDTO> getRevenueVsReceivedByDay(LocalDateTime startDate, LocalDateTime endDate) {
+        return getRawRevenueVsReceivedByDay(startDate, endDate).stream()
+                .map(arr -> {
+                    String period = String.format("%d-%02d-%02d", arr[0], arr[1], arr[2]);
+                    BigDecimal revenue = (BigDecimal) arr[3];
+                    BigDecimal received = (BigDecimal) arr[4];
+
+                    return new RevenueVsReceivedDTO(
+                            period,
+                            revenue,
+                            received != null ? received : BigDecimal.ZERO
+                    );
+                })
+                .toList();
+    }
+
+    @Query("""
+        SELECT 
+            function('YEAR', o.creationDate),
+            function('MONTH', o.creationDate),
+            SUM(c.totalAmount),
+            SUM(p.paidAmount)
+        FROM Order o
+        JOIN o.charges c
+        LEFT JOIN c.payments p
+        WHERE o.creationDate BETWEEN :startDate AND :endDate
+        AND o.active = true
+        AND c.active = true
+        AND o.status != 'CANCELLED'
+        AND (p.active = true OR p.id IS NULL)
+        GROUP BY function('YEAR', o.creationDate), function('MONTH', o.creationDate)
+        ORDER BY function('YEAR', o.creationDate), function('MONTH', o.creationDate)
+    """)
+    List<Object[]> getRawRevenueVsReceivedByMonth(LocalDateTime startDate, LocalDateTime endDate);
+
+    default List<RevenueVsReceivedDTO> getRevenueVsReceivedByMonth(LocalDateTime startDate, LocalDateTime endDate) {
+        return getRawRevenueVsReceivedByMonth(startDate, endDate).stream()
+                .map(arr -> {
+                    String period = String.format("%d-%02d", arr[0], arr[1]);
                     BigDecimal revenue = (BigDecimal) arr[2];
                     BigDecimal received = (BigDecimal) arr[3];
 
