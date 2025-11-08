@@ -83,7 +83,7 @@ public class PaymentService {
         updateChargeStatus(charge);
     }
 
-    private void updateChargeStatus(Charge charge) {
+    public void updateChargeStatus(Charge charge) {
         BigDecimal totalPaid = charge.getPayments().stream()
                 .map(Payment::getPaidAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

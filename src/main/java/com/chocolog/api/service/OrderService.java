@@ -29,8 +29,9 @@ public class OrderService {
     private final ChargeRepository chargeRepository;
     private final SizeRepository sizeRepository;
     private final FlavorRepository flavorRepository;
-    private final ProductPriceService productPriceService;
     private final StockRepository stockRepository;
+    private final ProductPriceService productPriceService;
+    private final PaymentService paymentService;
     private final OrderMapper orderMapper;
 
     public List<OrderResponseDTO> findAllByDateFilter(String dateString) {
@@ -202,6 +203,7 @@ public class OrderService {
         charge.setTotalAmount(totalAmount);
 
         chargeRepository.save(charge);
+        paymentService.updateChargeStatus(charge);
     }
 
     public void adjustRemainingStock(Flavor flavor, Size size, int quantityDelta) {
