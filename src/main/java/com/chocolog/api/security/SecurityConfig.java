@@ -49,6 +49,11 @@ public class SecurityConfig {
                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
             )
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                ).permitAll()
                 .requestMatchers(toH2Console()).permitAll()
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/flavors").hasRole("ADMIN")

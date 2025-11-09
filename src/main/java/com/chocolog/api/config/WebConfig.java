@@ -1,4 +1,4 @@
-package com.chocolog.api.security;
+package com.chocolog.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
