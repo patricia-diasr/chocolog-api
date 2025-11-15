@@ -155,7 +155,9 @@ public class OrderService {
             charge.setDiscount(orderDTO.getDiscount());
             BigDecimal totalAmount = charge.getSubtotalAmount().subtract(orderDTO.getDiscount());
             charge.setTotalAmount(totalAmount);
+
             chargeRepository.save(charge);
+            paymentService.updateChargeStatus(charge);
         }
 
         Order updatedOrder = orderRepository.save(existingOrder);

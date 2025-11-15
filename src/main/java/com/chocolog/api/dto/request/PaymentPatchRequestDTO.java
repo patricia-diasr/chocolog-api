@@ -1,6 +1,6 @@
 package com.chocolog.api.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class PaymentPatchRequestDTO {
 
     private BigDecimal paidAmount;

@@ -1,9 +1,6 @@
 package com.chocolog.api.dto.request;
 
-import com.chocolog.api.validation.FutureOrPresentDate;
-import com.chocolog.api.validation.ValidOrderStatus;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -18,7 +15,6 @@ import java.util.List;
 public class OrderRequestDTO {
 
     @NotNull(message = "Expected pickup date cannot be null")
-    @FutureOrPresentDate
     private LocalDateTime expectedPickupDate;
 
     private String notes;

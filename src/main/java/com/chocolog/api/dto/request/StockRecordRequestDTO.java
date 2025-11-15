@@ -1,5 +1,6 @@
 package com.chocolog.api.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Getter
 @Setter
+@Builder
 public class StockRecordRequestDTO {
 
     @NotNull(message = "Flavor ID cannot be null")

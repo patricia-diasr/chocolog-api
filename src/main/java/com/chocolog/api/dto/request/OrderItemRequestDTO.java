@@ -3,11 +3,13 @@ package com.chocolog.api.dto.request;
 import com.chocolog.api.validation.ValidOrderStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class OrderItemRequestDTO {
 
     @NotNull(message = "Size ID cannot be null")

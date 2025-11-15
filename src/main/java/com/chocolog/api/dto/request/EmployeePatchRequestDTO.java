@@ -2,11 +2,13 @@ package com.chocolog.api.dto.request;
 
 import com.chocolog.api.validation.ValidRole; 
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class EmployeePatchRequestDTO {
 
     private String name;

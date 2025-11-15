@@ -39,6 +39,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
