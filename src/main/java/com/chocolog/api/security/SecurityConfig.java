@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,8 +23,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @RequiredArgsConstructor
 @Configuration
@@ -44,7 +41,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -53,7 +51,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -64,63 +62,68 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/flavors").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/flavors/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/flavors/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/employees").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/employees").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/employees/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/reports/dashboard").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/actuator/**").hasRole("ADMIN")
-                        .requestMatchers(toH2Console()).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,
-                                "/customers", "/flavors", "/flavors/{id}", "/employees/{id}",
-                                "/stock-records", "/orders", "/customers/{id}/orders",
-                                "/customers/*/orders/*",
-                                "/orders/items", "/orders/print-batchs",
-                                "/orders/print-batchs/{id}", "/orders/print-batchs/{id}/download"
-                        ).hasAnyRole("ADMIN", "STAFF")
+            .cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/**").hasRole("ADMIN")
+                .requestMatchers("/auth/login").permitAll()
 
-                        .requestMatchers(HttpMethod.POST,
-                                "/customers", "/stock-records",
-                                "/customers/*/orders/*",
-                                "/customers/*/orders/*/items",
-                                "/customers/*/orders/*/payments",
-                                "/orders/print-batchs"
-                        ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/flavors").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/flavors/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/flavors/{id}").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PATCH,
-                                "/customers",
-                                "/customers/*/orders/*",
-                                "/customers/*/orders/*/items/*",
-                                "/customers/*/orders/*/payments/*"
-                        ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.GET, "/employees").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/employees").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/employees/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE,
-                                "/customers/*/orders/*",
-                                "/customers/*/orders/*/items/*",
-                                "/customers/*/orders/*/payments/*"
-                        ).hasAnyRole("ADMIN", "STAFF")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers(HttpMethod.GET, "/reports/dashboard").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/actuator/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET,
+                    "/customers", "/flavors", "/flavors/{id}",
+                    "/employees/{id}",
+                    "/stock-records", "/orders", "/customers/{id}/orders",
+                    "/customers/*/orders/*",
+                    "/orders/items", "/orders/print-batchs",
+                    "/orders/print-batchs/{id}",
+                    "/orders/print-batchs/{id}/download")
+                .hasAnyRole("ADMIN", "STAFF")
+
+                .requestMatchers(HttpMethod.POST,
+                    "/customers", "/stock-records",
+                    "/customers/*/orders/*",
+                    "/customers/*/orders/*/items",
+                    "/customers/*/orders/*/payments",
+                    "/orders/print-batchs")
+                .hasAnyRole("ADMIN", "STAFF")
+
+                .requestMatchers(HttpMethod.PATCH,
+                    "/customers",
+                    "/customers/*/orders/*",
+                    "/customers/*/orders/*/items/*",
+                    "/customers/*/orders/*/payments/*")
+                .hasAnyRole("ADMIN", "STAFF")
+
+                .requestMatchers(HttpMethod.DELETE,
+                    "/customers/*/orders/*",
+                    "/customers/*/orders/*/items/*",
+                    "/customers/*/orders/*/payments/*")
+                .hasAnyRole("ADMIN", "STAFF")
+
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
